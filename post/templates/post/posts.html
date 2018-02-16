@@ -1,0 +1,26 @@
+{% extends 'post/base.html' %}
+{% load staticfiles %}
+
+{% block posts %}
+    <hr/>
+    {% if user.is_authenticated %}
+		<a href="/post/new/"><input type="button" class="button" value="Создать пост"></a>
+	{% else %}
+		<a href="/auth/login/">Войдите в систему, чтобы создавать посты</a>
+	{% endif %}
+     <hr/>
+	{% for post in posts %}
+        <h5>Создал: <a href="/{{ post.post_author }}/profile/">{{ post.post_author }}</a></h5>
+		<h6>Дата публикации: {{ post.post_date }}</h6>
+		<h4><a href="/post/{{ post.id }}">{{ post.post_title }}</a></h4>
+
+        {% if post.post_image %}
+            <a href="/post/{{ post.id }}"><img src="{{ post.post_image.url }}" width="720px" height="360px"></a>
+        {% endif %}
+
+        <p>{{ post.post_text }}</p>
+		<p><a href="/post/like/{{ post.id }}"><img src='{% static "images/like.png" %}' width="25px" height="25px"></img>{{ post.post_likes }}</a></p>
+		<hr/>
+	{% endfor %}
+
+{% endblock %}

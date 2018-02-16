@@ -1,0 +1,11 @@
+Django==1.9
+django-crispy-forms==1.6.0
+django-markdown-deux==1.0.5
+django-pagedown==0.1.1
+djangorestframework==3.3.2
+requests==2.18.4
+social-auth-app-django==2.1.0
+social-auth-core==1.6.0
+sqlparse==0.2.2
+virtualenv==15.1.0
+

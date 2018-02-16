@@ -1,0 +1,15 @@
+{% extends 'post/base.html' %}
+{% load staticfiles %}
+
+{% block avatar %}
+    {% if user.is_authenticated %}
+        <h3><a href="/">Добавить аватар</a></h3>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="button">Сохранить</button>
+        </form>
+    {% else %}
+         <a href="/auth/login/">Войдите в систему или зарегистрируйтесь, чтобы редактировать профиль</a>
+    {% endif %}
+{% endblock %}

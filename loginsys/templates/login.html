@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block login %}
+	<div class="large-offset-3 large-6 columns">
+		<form action="/auth/login/" method="post">
+			{% csrf_token %}
+			<label for="username">Имя пользователя</label>
+			<input type="text" name="username" is="username">
+			<label for="password">Пароль</label>
+			<input type="password" name="password" id="password">
+			{% if login_error %}
+				<label class="error">{{ login_error }}</label>
+			{% endif %}
+			<input type="submit" class="button" value="Войти">
+			<a href="/auth/register/"><input type="button" class="button" value="Зарегистрироваться"></a>
+		</form>
+
+        <p><strong>-- OR --</strong></p>
+        <a href="{% url 'social:begin' 'github' %}">Login with GitHub</a><br>
+        <a href="{% url 'social:begin' 'facebook' %}">Login with Facebook</a>
+
+	</div>
+{% endblock %}

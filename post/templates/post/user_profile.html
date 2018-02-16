@@ -1,0 +1,19 @@
+{% extends 'post/base.html' %}
+{% load staticfiles %}
+
+{% block login %}
+    <p>LOGIN: {{ user.username  }}</p>
+    <img src="{{ avatar.photo.url }}" width="250px" height="250px"><br/>
+    <hr/>
+
+    {% for post in posts %}
+        <h6>Дата публикации: {{ post.post_date }}</h6>
+        <h4><a href="/post/{{ post.id }}">{{ post.post_title }}</a></h4>
+        {% if post.post_image %}
+            <img src="{{ post.post_image.url }}" width="720px" height="360px">
+        {% endif %}
+        <p>{{ post.post_text }}</p>
+        <p><a href="/post/like/{{ post.id }}"><img src='{% static "images/like.png" %}' width="25px" height="25px"></img>{{ post.post_likes }}</a></p>
+        <hr/>
+    {% endfor %}
+{% endblock %}
