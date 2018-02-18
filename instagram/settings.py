@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'social',
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -148,17 +148,3 @@ SOCIAL_AUTH_GITHUB_SECRET = 'c7d47c3b60620d6c0ee4cefbcb0c8a6922f5a787'
 
 SOCIAL_AUTH_FACEBOOK_KEY = '1645355935572388'  # App ID
 SOCIAL_AUTH_FACEBOOK_SECRET = '5b51697b41291a0bb8c8ebbc8a95aaeb'  # App Secret
-
-
-
-
-
-
-
-SOCIAL_AUTH_VK_OAUTH2_KEY = '6374771'
-SOCIAL_AUTH_VK_OAUTH2_SECRET = 'YyKRZqUNWABtJSSVij48'
-
-VK_APP_ID = '6374771'
-VKONTAKTE_APP_ID = VK_APP_ID
-VK_API_SECRET = 'YyKRZqUNWABtJSSVij48'
-VKONTAKTE_APP_SECRET = VK_API_SECRET

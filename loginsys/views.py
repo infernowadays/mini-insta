@@ -47,7 +47,7 @@ def register(request):
             #add a default avatar to new user
             avatar = Profile.create(auth.get_user(request).id)
             avatar.save()
-            return redirect('/profile')
+            return redirect('/profile/me')
         else:
             args['form'] = newuser_form
     return render(request, 'register.html', args)
