@@ -44,7 +44,7 @@ def new_post(request):
 
 
 def like(request, post_id):
-    like, created = Like.objects.get_or_create(post=Post.objects.get(id=post_id), author=request.user)
+    like, created = Like.objects.get_or_create(post_id=post_id, author=request.user)
     if not created:
         like.delete()
 
