@@ -1,16 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
-from django.shortcuts import render
-
-# Create your views here.
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AdminPasswordChangeForm, PasswordChangeForm, UserCreationForm
 from django.contrib.auth import update_session_auth_hash, login, authenticate
 from django.contrib import messages
 from django.shortcuts import render, redirect
-
-from social_django.models import UserSocialAuth
 
 
 def signup(request):
@@ -38,27 +32,12 @@ def home(request):
 def settings(request):
     user = request.user
 
-    try:
-        github_login = user.social_auth.get(provider='github')
-    except UserSocialAuth.DoesNotExist:
-        github_login = None
-    try:
-        twitter_login = user.social_auth.get(provider='twitter')
-    except UserSocialAuth.DoesNotExist:
-        twitter_login = None
-    try:
-        facebook_login = user.social_auth.get(provider='facebook')
-    except UserSocialAuth.DoesNotExist:
-        facebook_login = None
-
-    can_disconnect = (user.social_auth.count() > 1 or user.has_usable_password())
-
-    return render(request, 'core/settings.html', {
-        'github_login': github_login,
-        'twitter_login': twitter_login,
-        'facebook_login': facebook_login,
-        'can_disconnect': can_disconnect
-    })
+    social_accounts = user.social_auth.filter(provider__in=['github', 'twitter', 'facebook'])
+    can_disconnect = social_accounts.exists() or user.has_usable_password()
+    data = {'can_disconnect': can_disconnect}
+    for social_account in social_accounts:
+        data['{}_login'.format(social_accounts.provider)] = social_account
+    return render(request, 'core/settings.html', data)
 
 
 @login_required
