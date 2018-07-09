@@ -2,28 +2,28 @@
 {% load staticfiles %}
 
 {% block posts %}
-    <h5>Создал: {{ post.post_author }}</h5>
-	<h6>Дата публикации: {{ post.post_date }}</h6>
-	<h4>{{ post.post_title }}</h4>
-    {% if post.post_image %}
-        <img src="{{ post.post_image.url }}" width="720px" height="360px">
+    <h5>Создал: {{ post.author }}</h5>
+	<h6>Дата публикации: {{ post.date }}</h6>
+	<h4>{{ post.title }}</h4>
+    {% if post.image %}
+        <img src="{{ post.image.url }}" width="720px" height="360px">
     {% endif %}
-	<p>{{ post.post_text }}</p>
-	<p><a href="/post/like/{{ post.id }}/"><img src='{% static "images/like.png" %}' width="25px" height="25px"></img>{{ post.post_likes }}</a></p>
+	<p>{{ post.text }}</p>
+	<p><a href="/post/like/{{ post.id }}/"><img src='{% static "images/like.png" %}' width="25px" height="25px"></img>{{ post.like_set.count }}</a></p>
 	<p>Комментарии:</p>
 	<hr/>
 	{% for comment in comments %}
-		<p>{{ comment.comments_text }}</p>
-		<p><a href="/{{ comment.comments_from }}/profile/">
+		<p>{{ comment.comment }}</p>
+		<p><a href="/{{ comment.author }}/profile/">
 
         {% for ava in avatar %}
-            {% if ava.user_id == comment.comments_from.id %}
+            {% if ava.user_id == comment.author.id %}
                 <img class="avatar" src="{{ ava.photo.url }}">
             {% endif %}
         {% endfor %}
 
-            {{ comment.comments_from }}
-            {{ comment.comments_date }}
+            {{ comment.author }}
+            {{ comment.date }}
         </a></p>
 		<hr/>
 	{% endfor %}

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-# from __future__ import unicode_literals
-
 from django.contrib import admin
 from .models import Post, Comments
 
@@ -11,9 +8,9 @@ class PostInline(admin.StackedInline):
 
 
 class PostAdmin(admin.ModelAdmin):
-    fields = ['post_title', 'post_text', 'post_date', 'post_image', ]
+    fields = ['title', 'text', 'date', 'image', ]
     inlines = [PostInline]
-    list_filter = ['post_date']
+    list_filter = ['date']
 
 
 admin.site.register(Post, PostAdmin)

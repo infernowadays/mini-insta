@@ -42,10 +42,10 @@ def register(request):
             newuser_form.save()
             newuser = auth.authenticate(username=newuser_form.cleaned_data['username'],
                                         password=newuser_form.cleaned_data['password2'])
-            #login new user
+            # login new user
             auth.login(request, newuser)
-            #add a default avatar to new user
-            avatar = Profile.create(auth.get_user(request).id)
+            # add a default avatar to new user
+            avatar = Profile.create(request.user.id)
             avatar.save()
             return redirect('/profile/me')
         else:
@@ -54,5 +54,6 @@ def register(request):
 
 
 def profile(request):
-	return render(request, 'post/profile.html', {})
+    return render(request, 'post/profile.html', {})
+
 

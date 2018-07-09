@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+from secret import Keys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '51_f_$g*x0^q(%z6^9aa+r_#+0sr886%_rqx*d-^ec58kiq(+('
+SECRET_KEY = Keys.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -143,8 +144,8 @@ LOGIN_URL = '/auth/login'
 LOGOUT_URL = '/auth/logout'
 LOGIN_REDIRECT_URL = '/profile/me'
 
-SOCIAL_AUTH_GITHUB_KEY = 'ed5614e5cef756c97c9f'
-SOCIAL_AUTH_GITHUB_SECRET = 'c7d47c3b60620d6c0ee4cefbcb0c8a6922f5a787'
+SOCIAL_AUTH_GITHUB_KEY = Keys.SOCIAL_AUTH_GITHUB_KEY
+SOCIAL_AUTH_GITHUB_SECRET = Keys.SOCIAL_AUTH_GITHUB_SECRET
 
-SOCIAL_AUTH_FACEBOOK_KEY = '1645355935572388'  # App ID
-SOCIAL_AUTH_FACEBOOK_SECRET = '5b51697b41291a0bb8c8ebbc8a95aaeb'  # App Secret
+SOCIAL_AUTH_FACEBOOK_KEY = Keys.SOCIAL_AUTH_FACEBOOK_KEY
+SOCIAL_AUTH_FACEBOOK_SECRET = Keys.SOCIAL_AUTH_FACEBOOK_SECRET

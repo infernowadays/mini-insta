@@ -12,6 +12,7 @@ from django.shortcuts import render, redirect
 
 from social_django.models import UserSocialAuth
 
+
 def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -27,9 +28,11 @@ def signup(request):
         form = UserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})
 
+
 @login_required
 def home(request):
     return render(request, 'social/home.html')
+
 
 @login_required
 def settings(request):
@@ -56,6 +59,7 @@ def settings(request):
         'facebook_login': facebook_login,
         'can_disconnect': can_disconnect
     })
+
 
 @login_required
 def password(request):
