@@ -10,10 +10,10 @@
 <div class="top-bar">
 	<section class="right">
 		{% if username %}
-            <li><a href="/profile/me/">Профиль</a></li>
-			<li><a href="/auth/logout/">Выйти ({{ username }})</a></li>
+            <li><a href="{% url 'profile' %}">Профиль</a></li>
+			<li><a href="{% url 'logout' %}">Выйти ({{ username }})</a></li>
 		{% else %}
-			<li><a href="/auth/login/">Войти</a></li>
+			<li><a href="{% url 'login' %}">Войти</a></li>
 		{% endif %}
 	</section>
 </div>

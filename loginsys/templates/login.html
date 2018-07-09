@@ -12,7 +12,7 @@
 				<label class="error">{{ login_error }}</label>
 			{% endif %}
 			<input type="submit" class="button" value="Войти">
-			<a href="/auth/register/"><input type="button" class="button" value="Зарегистрироваться"></a>
+			<a href="{% url 'register' %}"><input type="button" class="button" value="Зарегистрироваться"></a>
 		</form>
 
         <p><strong>-- OR --</strong></p>

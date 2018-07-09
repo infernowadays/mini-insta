@@ -5,18 +5,18 @@
     <h2>{{ user.get_full_name }}</h2>
     <a>Username: {{ user.username }}</a><br/>
     <img src="{{ user.profile.photo.url }}" width="250px" height="250px"><br/>
-    <a href="/profile/avatar/">Изменить аватар</a>
+    <a href="{% url 'avatar' %}">Изменить аватар</a>
     <hr/>
     <h3>Контент</h3>
 
     {% for post in posts %}
         <h6>Дата публикации: {{ post.date }}</h6>
-        <h4><a href="/post/{{ post.id }}">{{ post.title }}</a></h4>
+        <h4><a href="{% url 'post' post_id=post.id %}">{{ post.title }}</a></h4>
         {% if post.post_image %}
             <img src="{{ post.image.url }}" width="720px" height="360px">
         {% endif %}
         <p>{{ post.text }}</p>
-        <p><a href="/post/like/{{ post.id }}"><img src="{% static "images/like.png" %}" width="25px" height="25px"></img>{{ post.likes }}</a></p>
+        <p><a href="{% url 'like' post_id=post.id %}"><img src="{% static "images/like.png" %}" width="25px" height="25px"></img>{{ post.likes }}</a></p>
         <hr/>
     {% endfor %}
 {% endblock %}

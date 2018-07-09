@@ -11,8 +11,15 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-from secret import Keys
+import environ
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
+# reading .env file
+environ.Env.read_env()
+# from secret import Keys
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -21,10 +28,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = Keys.SECRET_KEY
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -144,8 +151,8 @@ LOGIN_URL = '/auth/login'
 LOGOUT_URL = '/auth/logout'
 LOGIN_REDIRECT_URL = '/profile/me'
 
-SOCIAL_AUTH_GITHUB_KEY = Keys.SOCIAL_AUTH_GITHUB_KEY
-SOCIAL_AUTH_GITHUB_SECRET = Keys.SOCIAL_AUTH_GITHUB_SECRET
+SOCIAL_AUTH_GITHUB_KEY = env('SOCIAL_AUTH_GITHUB_KEY')
+SOCIAL_AUTH_GITHUB_SECRET = env('SOCIAL_AUTH_GITHUB_SECRET')
 
-SOCIAL_AUTH_FACEBOOK_KEY = Keys.SOCIAL_AUTH_FACEBOOK_KEY
-SOCIAL_AUTH_FACEBOOK_SECRET = Keys.SOCIAL_AUTH_FACEBOOK_SECRET
+SOCIAL_AUTH_FACEBOOK_KEY = env('SOCIAL_AUTH_FACEBOOK_KEY')
+SOCIAL_AUTH_FACEBOOK_SECRET = env('SOCIAL_AUTH_FACEBOOK_SECRET')

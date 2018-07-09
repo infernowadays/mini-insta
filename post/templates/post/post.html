@@ -9,12 +9,12 @@
         <img src="{{ post.image.url }}" width="720px" height="360px">
     {% endif %}
 	<p>{{ post.text }}</p>
-	<p><a href="/post/like/{{ post.id }}/"><img src='{% static "images/like.png" %}' width="25px" height="25px"></img>{{ post.like_set.count }}</a></p>
+	<p><a href="{% url 'like' post_id=post.id %}"><img src="{% static "images/like.png" %}" width="25px" height="25px"></img>{{ post.like_set.count }}</a></p>
 	<p>Комментарии:</p>
 	<hr/>
 	{% for comment in comments %}
 		<p>{{ comment.comment }}</p>
-		<p><a href="/{{ comment.author }}/profile/">
+		<p><a href="{% url 'user_profile' user_name=post.author %}">
 
         {% for ava in avatar %}
             {% if ava.user_id == comment.author.id %}
@@ -29,12 +29,12 @@
 	{% endfor %}
 
 	{% if user.is_authenticated %}
-		<form action="/post/comment/{{ post.id }}/" method="post">
+		<form action="{% url 'comment' post_id=post.id %}" method="post">
 			{% csrf_token %}
 			{{ form }}
 			<input type="submit" class="button" value="Добавить комментарий">
 		</form>
 	{% else %}
-		<a href="/auth/login/">Войдите в систему, чтобы оставлять комментарии</a>
+		<a href="{% url 'login' %}">Войдите в систему, чтобы оставлять комментарии</a>
 	{% endif %}
 {% endblock %}
