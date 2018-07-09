@@ -2,6 +2,7 @@
 db.sqlite3
 /env
 /media
+/instagram/secret.py
 /instagram/secret.pyc
 /instagram/__init__.pyc
 /instagram/settings.pyc
