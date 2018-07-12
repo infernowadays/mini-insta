@@ -32,7 +32,7 @@
 		<form action="{% url 'comment' post_id=post.id %}" method="post">
 			{% csrf_token %}
 			{{ form }}
-			<input type="submit" class="button" value="Добавить комментарий">
+			<input type="submit" class="button" value="Отправить">
 		</form>
 	{% else %}
 		<a href="{% url 'login' %}">Войдите в систему, чтобы оставлять комментарии</a>

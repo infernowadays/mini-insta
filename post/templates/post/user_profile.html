@@ -13,7 +13,9 @@
             <img src="{{ post.image.url }}" width="720px" height="360px">
         {% endif %}
         <p>{{ post.text }}</p>
-        <p><a href="{% url 'like' post_id=post.id %}"><img src="{% static "images/like.png" %}" width="25px" height="25px"></img>{{ post.likes }}</a></p>
+        <p><a href="{% url 'like' post_id=post.id %}"><img src="{% static "images/like.png" %}" width="25px" height="25px"></img>
+            {{ post.like_set.count }}
+        </a></p>
         <hr/>
     {% endfor %}
 {% endblock %}

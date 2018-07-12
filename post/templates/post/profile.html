@@ -12,11 +12,15 @@
     {% for post in posts %}
         <h6>Дата публикации: {{ post.date }}</h6>
         <h4><a href="{% url 'post' post_id=post.id %}">{{ post.title }}</a></h4>
-        {% if post.post_image %}
-            <img src="{{ post.image.url }}" width="720px" height="360px">
+
+        {% if post.image %}
+            <a href="{% url 'post' post_id=post.id %}"><img src="{{ post.image.url }}" width="720px" height="360px"></a>
         {% endif %}
+
         <p>{{ post.text }}</p>
-        <p><a href="{% url 'like' post_id=post.id %}"><img src="{% static "images/like.png" %}" width="25px" height="25px"></img>{{ post.likes }}</a></p>
+        <p><a href="{% url 'like' post_id=post.id %}"><img src="{% static "images/like.png" %}" width="25px" height="25px"></img>
+            {{ post.like_set.count }}
+        </a></p>
         <hr/>
     {% endfor %}
 {% endblock %}

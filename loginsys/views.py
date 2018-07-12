@@ -3,14 +3,10 @@ from __future__ import unicode_literals
 from django.shortcuts import render, redirect
 from django.contrib import auth
 from django.contrib.auth.forms import UserCreationForm
-from forms import ProfileForm
 from models import Profile
 
-from django.http.response import HttpResponse
-from django.http import HttpResponseRedirect
+from django.views.generic.base import RedirectView
 
-
-# Create your views here.
 
 def login(request):
     args = {}
@@ -26,6 +22,15 @@ def login(request):
             return render(request, 'login.html', args)
     else:
         return render(request, 'login.html', args)
+
+
+class LogoutRedirectView(RedirectView):
+    url = '/'
+    permanent = True
+
+    def __init__(self):
+        auth.logout(self.request)
+        super(LogoutRedirectView, self).__init__()
 
 
 def logout(request):

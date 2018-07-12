@@ -1,79 +1,72 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 from post.models import Post, Comments, Like
 from forms import CommentForm, PostForm
-from django.contrib import auth
 from django.contrib.auth.models import User
 from loginsys.forms import ProfileForm
 from loginsys.models import Profile
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
-from django.contrib.auth import authenticate, login
+
+from django.views.generic.edit import CreateView
+from django.views.generic.list import ListView
+from django.views.generic.base import TemplateView
 
 
-def posts(request):
-    posts = Post.objects.all().order_by('-id')
-    comments = Comments.objects.all()
-    html = render(request, 'post/posts.html',
-                  {'posts': posts, 'comments': comments, 'username': request.user.username})
-    return html
+class PostListView(ListView):
+    template_name = 'post/posts.html'
+    model = Post
+    context_object_name = 'posts'
+    queryset = Post.objects.order_by('-id')
+    paginate_by = 5
 
 
-def post(request, post_id):
-    comment_form = CommentForm
-    args = {}
-    args['post'] = Post.objects.get(id=post_id)
-    args['comments'] = Comments.objects.filter(post=post_id).order_by('-id')
-    args['form'] = comment_form
-    args['username'] = request.user.username
-    args['avatar'] = Profile.objects.all()
-    return render(request, 'post/post.html', args)
+class PostDetailView(ListView):
+    template_name = 'post/post.html'
+    model = Comments
+
+    def get_context_data(self, **kwargs):
+        context = super(PostDetailView, self).get_context_data(**kwargs)
+        context['post'] = Post.objects.get(id=Post.objects.get(id=self.kwargs['post_id']).id)
+        context['comments'] = Comments.objects.filter(post=Post.objects.get(id=self.kwargs['post_id']).id).order_by('-id')
+        context['form'] = CommentForm
+        context['username'] = self.request.user.username
+        context['avatar'] = Profile.objects.all()
+        return context
 
 
-def new_post(request):
-    if request.POST:
-        form = PostForm(request.POST, request.FILES)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            form.save()
-            return redirect('/')
-    else:
-        form = PostForm()
-    return render(request, 'post/new_post.html', {'form': form, 'username': request.user.username})
+class NewPostView(CreateView):
+    template_name = 'post/new_post.html'
+    model = Post
+    fields = ['title', 'text', 'image']
+    success_url = '/'
+    # fields = '__all__'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super(NewPostView, self).form_valid(form)
 
 
-def like(request, post_id):
-    like, created = Like.objects.get_or_create(post_id=post_id, author=request.user)
-    if not created:
-        like.delete()
+class CommentView(CreateView):
+    template_name = 'post/comment.html'
+    model = Comments
+    fields = ['comment']
 
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    def form_valid(self, form):
+        form.instance.post = Post.objects.get(id=self.kwargs['post_id'])
+        form.instance.author = User.objects.get(id=self.request.user.id)
+        return super(CommentView, self).form_valid(form)
 
-
-def comment(request, post_id):
-    if request.POST and ('pause' not in request.session):
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = Post.objects.get(id=post_id)
-            #
-            user_id = request.user.id
-            comment.author = User.objects.get(id=user_id)
-            #
-            form.save()
-            # session limit comments 30 sec
-            #request.session.set_expiry(30)
-            #request.session['pause'] = True
-    return redirect('/post/%s' % post_id)
+    def get_success_url(self):
+        return '/post/' + str(Post.objects.get(id=self.kwargs['post_id']).id)
 
 
-@login_required
-def profile(request):
-    args = {}
-    args['username'] = request.user.username
-    args['posts'] = Post.objects.filter(author=request.user.id)
-    return render(request, 'post/profile.html', args)
+class ProfilePage(TemplateView):
+    template_name = 'post/profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProfilePage, self).get_context_data(**kwargs)
+        context['posts'] = Post.objects.filter(author=self.request.user.id)
+        return context
 
 
 def avatar(request):
@@ -85,9 +78,7 @@ def avatar(request):
         form = ProfileForm(request.POST, request.FILES, instance=avatar)
         if form.is_valid():
             profile = form.save(commit=False)
-
             profile.user_id = user_id
-            #profile.save()
             form.save()
             return redirect('/profile/me')
     else:
@@ -95,12 +86,21 @@ def avatar(request):
     return render(request, 'post/add_avatar.html', {'form': form, 'username': request.user.username})
 
 
-def user_profile(request, user_name):
-    args = {}
-    user = User.objects.get(username=user_name)
-    #login(request, user)
-    args['username'] = request.user.username
-    args['user'] = user
-    args['posts'] = Post.objects.filter(author=user.id)
-    args['avatar'] = Profile.objects.get(user_id=user.id)
-    return render(request, 'post/user_profile.html', args)
+class UserProfilePage(TemplateView):
+    template_name = 'post/profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(UserProfilePage, self).get_context_data(**kwargs)
+        user = User.objects.get(username=self.kwargs['user_name'])
+        context['user'] = user
+        context['posts'] = Post.objects.filter(author=user.id)
+        context['avatar'] = Profile.objects.get(user_id=user.id)
+        return context
+
+
+def like(request, post_id):
+    like, created = Like.objects.get_or_create(post_id=post_id, author=request.user)
+    if not created:
+        like.delete()
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

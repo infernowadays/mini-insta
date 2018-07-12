@@ -7,7 +7,7 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="button">Сохранить</button>
+            <input type="submit" class="button" value="Отправить">
         </form>
     {% else %}
          <a href="{% url 'login' %}">Войдите в систему или зарегистрируйтесь, чтобы создавать посты</a>

@@ -1,0 +1,12 @@
+{% extends 'post/base.html' %}
+{% load staticfiles %}
+
+{% block posts %}
+    {% if user.is_authenticated %}
+		<form method="post">
+			{% csrf_token %}
+			{{ form }}
+			<input type="submit" class="button" value="Отправить">
+		</form>
+    {% endif %}
+{% endblock %}
