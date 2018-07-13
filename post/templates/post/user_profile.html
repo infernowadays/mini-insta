@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block login %}
-    <p>LOGIN: {{ user.username  }}</p>
+    <p>LOGIN: {{ user_profile.username  }}</p>
     <img src="{{ avatar.photo.url }}" width="250px" height="250px"><br/>
     <hr/>
 
@@ -14,7 +14,7 @@
         {% endif %}
         <p>{{ post.text }}</p>
         <p><a href="{% url 'like' post_id=post.id %}"><img src="{% static "images/like.png" %}" width="25px" height="25px"></img>
-            {{ post.like_set.count }}
+            {{ post.like.count }}
         </a></p>
         <hr/>
     {% endfor %}

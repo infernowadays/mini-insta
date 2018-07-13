@@ -1,11 +1,28 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 from django.shortcuts import render, redirect
 from django.contrib import auth
 from django.contrib.auth.forms import UserCreationForm
-from models import Profile
+from .models import Profile
 
 from django.views.generic.base import RedirectView
+from django.views.generic.edit import FormView
+from django.http import HttpResponse
+
+
+class LoginRedirectView(FormView):
+    template_name = 'login.html'
+    form_class = UserCreationForm
+    success_url = '/me'
+
+    def form_valid(self, form):
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+
+        user = auth.authenticate(username=username, password=password)
+        if user is not None:
+            auth.login(self.request, user)
+        else:
+            return HttpResponse('Login or pw incorrect')
+        return super().form_valid(form)
 
 
 def login(request):
@@ -26,16 +43,11 @@ def login(request):
 
 class LogoutRedirectView(RedirectView):
     url = '/'
-    permanent = True
 
-    def __init__(self):
-        auth.logout(self.request)
-        super(LogoutRedirectView, self).__init__()
-
-
-def logout(request):
-    auth.logout(request)
-    return redirect('/')
+    def get_redirect_url(self, *args, **kwargs):
+        if self.request.user.is_authenticated():
+            auth.logout(self.request)
+        return super().get_redirect_url(*args, **kwargs)
 
 
 def register(request):

@@ -9,14 +9,14 @@
         <img src="{{ post.image.url }}" width="720px" height="360px">
     {% endif %}
 	<p>{{ post.text }}</p>
-	<p><a href="{% url 'like' post_id=post.id %}"><img src="{% static "images/like.png" %}" width="25px" height="25px"></img>{{ post.like_set.count }}</a></p>
+	<p><a href="{% url 'like' post_id=post.id %}"><img src="{% static "images/like.png" %}" width="25px" height="25px"></img>{{ post.like.count }}</a></p>
 	<p>Комментарии:</p>
 	<hr/>
 	{% for comment in comments %}
 		<p>{{ comment.comment }}</p>
 		<p><a href="{% url 'user_profile' user_name=post.author %}">
 
-        {% for ava in avatar %}
+        {% for ava in commentator_avatars %}
             {% if ava.user_id == comment.author.id %}
                 <img class="avatar" src="{{ ava.photo.url }}">
             {% endif %}
