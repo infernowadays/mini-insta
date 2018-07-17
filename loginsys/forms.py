@@ -1,9 +1,14 @@
 from .models import Profile
-from django import forms
+from django.forms import FileInput, ModelForm
 
 
-class ProfileForm(forms.ModelForm):
+class ProfileForm(ModelForm):
+    # photo = forms.ImageField(widget=MyClearableFileInput)
+
     class Meta:
         model = Profile
-        fields = ('photo', )
+        fields = ('photo',)
+        widgets = {
+            'photo': FileInput(),
+        }
 

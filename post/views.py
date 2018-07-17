@@ -1,16 +1,9 @@
-from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 from post.models import Post, Comments, Like
 from .forms import CommentForm
 from django.contrib.auth.models import User
-from loginsys.forms import ProfileForm
 from loginsys.models import Profile
-from django.shortcuts import render, get_object_or_404
-
-from django.views.generic.edit import CreateView
-from django.views.generic.edit import DeleteView
-from django.views.generic.list import ListView
-from django.views.generic.base import TemplateView
+from django.views.generic import CreateView, ListView, TemplateView, UpdateView, View
 from django.core.urlresolvers import reverse
 
 
@@ -27,9 +20,10 @@ class PostDetailView(ListView):
     model = Comments
 
     def get_context_data(self, **kwargs):
+        post = Post.objects.get(id=self.kwargs['post_id'])
         context = super().get_context_data(**kwargs)
-        context['post'] = Post.objects.get(id=self.kwargs['post_id'])
-        context['comments'] = Comments.objects.filter(post=Post.objects.get(id=self.kwargs['post_id']).id).order_by('-id')
+        context['post'] = post
+        context['comments'] = post.comments.all().order_by('-id')
         context['form'] = CommentForm
         context['username'] = self.request.user.username
         context['commentator_avatars'] = Profile.objects.all()
@@ -65,26 +59,10 @@ class ProfilePage(TemplateView):
     template_name = 'post/profile.html'
 
     def get_context_data(self, **kwargs):
+        user = User.objects.get(id=self.request.user.id)
         context = super().get_context_data(**kwargs)
-        context['posts'] = Post.objects.filter(author=self.request.user.id)
+        context['posts'] = user.posts.all()
         return context
-
-
-def avatar(request):
-    user_id = request.user.id
-    pk = Profile.objects.get(user_id=user_id).id
-    avatar = get_object_or_404(Profile, pk=pk)
-
-    if request.POST:
-        form = ProfileForm(request.POST, request.FILES, instance=avatar)
-        if form.is_valid():
-            profile = form.save(commit=False)
-            profile.user_id = user_id
-            form.save()
-            return redirect('/me')
-    else:
-        form = ProfileForm()
-    return render(request, 'post/add_avatar.html', {'form': form, 'username': request.user.username})
 
 
 class UserProfilePage(TemplateView):
@@ -94,18 +72,28 @@ class UserProfilePage(TemplateView):
         context = super().get_context_data(**kwargs)
         user = User.objects.get(username=self.kwargs['user_name'])
         context['user_profile'] = user
-        context['posts'] = Post.objects.filter(author=user.id)
+        context['posts'] = user.posts.all()
         context['avatar'] = Profile.objects.get(user_id=user.id)
         return context
 
 
-class CreateOrDeleteLike(CreateView, DeleteView):
+class LikeView(View):
     model = Like
 
+    def get(self, request, post_id):
+        like, created = Like.objects.get_or_create(post_id=post_id, author_id=request.user.id)
+        if not created:
+            like.delete()
 
-def like(request, post_id):
-    like, created = Like.objects.get_or_create(post_id=post_id, author=request.user)
-    if not created:
-        like.delete()
+        return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
 
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+class ChangeAvatarView(UpdateView):
+    model = Profile
+    fields = ['photo']
+    template_name = 'post/add_avatar.html'
+    success_url = '/profile/me'
+
+    def get_object(self, queryset=None):
+        pk = self.request.user.profile
+        return pk
