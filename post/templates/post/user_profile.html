@@ -3,7 +3,7 @@
 
 {% block login %}
     <p>LOGIN: {{ user_profile.username  }}</p>
-    <img src="{{ profile.photo.url }}" width="250px" height="250px"><br/>
+    <img src="{{ avatar.photo.url }}" width="250px" height="250px"><br/>
     <hr/>
 
     {% for post in posts %}

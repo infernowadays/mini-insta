@@ -26,7 +26,7 @@ class PostDetailView(ListView):
         context['comments'] = post.comments.all().order_by('-id')
         context['form'] = CommentForm
         context['username'] = self.request.user.username
-        context['commentator_profiles'] = Profile.objects.all()
+        context['commentator_avatars'] = Profile.objects.all()
         return context
 
 
@@ -73,7 +73,7 @@ class UserProfilePage(TemplateView):
         user = User.objects.get(username=self.kwargs['user_name'])
         context['user_profile'] = user
         context['posts'] = user.posts.all()
-        context['profile'] = Profile.objects.get(user_id=user.id)
+        context['avatar'] = Profile.objects.get(user_id=user.id)
         return context
 
 
@@ -92,10 +92,8 @@ class ChangeAvatarView(UpdateView):
     model = Profile
     fields = ['photo']
     template_name = 'post/add_avatar.html'
+    success_url = '/profile/me'
 
     def get_object(self, queryset=None):
         pk = self.request.user.profile
         return pk
-
-    def get_success_url(self):
-        return reverse('profile')
