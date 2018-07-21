@@ -16,7 +16,7 @@
 		<p>{{ comment.comment }}</p>
 		<p><a href="{% url 'user_profile' user_name=post.author %}">
 
-        {% for ava in commentator_avatars %}
+        {% for ava in commentator_profiles %}
             {% if ava.user_id == comment.author.id %}
                 <img class="avatar" src="{{ ava.photo.url }}">
             {% endif %}
