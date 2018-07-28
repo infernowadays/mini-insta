@@ -36,7 +36,7 @@ $ source env/bin/activate
 (env) ~$ pip install -r requirements.txt
 ```
 
-#### Run project
+## Run project
 ```
 (env) ~/mini-insta$ python manage.py runserver
 ```
