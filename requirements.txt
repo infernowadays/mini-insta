@@ -10,4 +10,4 @@ sqlparse==0.2.2
 virtualenv==15.1.0
 django-environ==0.4.5
 Pillow==5.2.0
-
+coverage==4.5.1

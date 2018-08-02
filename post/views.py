@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from loginsys.models import Profile
 from django.views.generic import CreateView, ListView, TemplateView, UpdateView, View
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
 class PostListView(ListView):
@@ -55,14 +57,17 @@ class CommentView(CreateView):
         return reverse('post', args=[self.kwargs['post_id']])
 
 
+@method_decorator(login_required, name='dispatch')
 class ProfilePage(TemplateView):
     template_name = 'post/profile.html'
 
     def get_context_data(self, **kwargs):
-        user = User.objects.get(id=self.request.user.id)
-        context = super().get_context_data(**kwargs)
-        context['posts'] = user.posts.all()
-        return context
+        if not self.request.user.is_anonymous():
+            user = User.objects.get(id=self.request.user.id)
+            context = super().get_context_data(**kwargs)
+            context['posts'] = user.posts.all()
+            return context
+        return None
 
 
 class UserProfilePage(TemplateView):
