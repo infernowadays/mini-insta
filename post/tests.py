@@ -14,8 +14,13 @@ class PostListViewTestCase(TestCase):
         Post.objects.create(title='Test Post', text='Hello World!', date=timezone.now(), author=user)
 
     def test_published_posts(self):
-        self.assertEqual(Post.objects.first().text, 'QQ')
-        self.assertEqual(Post.objects.last().title, 'Test Post')
+        response = self.client.get(reverse('posts'))
+
+        posts = response.context['posts']
+        list_posts = [entry for entry in posts]
+
+        self.assertEqual(list_posts[1].text, 'QQ')
+        self.assertEqual(list_posts[0].title, 'Test Post')
 
 
 class PostModelTestCase(TestCase):
@@ -82,19 +87,27 @@ class CommentFormTestCase(TestCase):
         self.assertEqual(comment.comment, 'Im the first!')
 
 
-'''
-В классе, описанном ниже проверяю, валидно ли делается переход на страницу пользователя по username,
-но django справедливо требует Profile object данного юзера.
-Можно ли передать профиль через reverse? 
-
-
-
 class UserProfilePageTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='user', password='top_secret')
+        self.profile = Profile.objects.create(user=self.user)
+        self.post = Post.objects.create(title='Super Important Test', text='QQ', date=timezone.now(), author=self.user)
 
     def test_user_profile(self):
-        Profile.create(self.user.id)
-        response = self.client.get(reverse('user_profile', args=[self.user.username]))
-        self.assertEqual(response.status_code, 302)
-'''
+        response = self.client.get(reverse('user_profile', args=[self.user.username]),
+                                   context={'user_profile': User.objects.get(username=self.user.username),
+                                            'posts': self.post,
+                                            'profile': Profile.objects.get(user_id=self.user.id)})
+
+        # Success Redirect
+        self.assertEqual(response.status_code, 200)
+
+        # Profile Data
+        profile = response.context['user_profile']
+        self.assertEqual(profile.id, 1)
+        self.assertEqual(profile.username, 'user')
+
+        # Posts Data
+        posts = response.context['posts']
+        list_posts = [entry for entry in posts]
+        self.assertEqual(list_posts[0].title, 'Super Important Test')

@@ -20,5 +20,5 @@ urlpatterns = [
                   url(r'^post/like/(?P<post_id>\d+)/$', LikeView.as_view(), name='like'),
                   url(r'^post/comment/(?P<post_id>\d+)/$', CommentView.as_view(), name='comment'),
                   url(r'^post/(?P<post_id>\d+)/$', PostDetailView.as_view(), name='post'),
-                  url(r'^$', PostListView.as_view()),
+                  url(r'^$', PostListView.as_view(), name='posts'),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

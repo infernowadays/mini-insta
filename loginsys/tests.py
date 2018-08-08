@@ -18,18 +18,32 @@ class LogoutViewTestCase(TestCase):
         self.user = User.objects.create_user(username='test', password='top_secret')
         self.client.login(username=self.user.username, password='top_secret')
 
-    def test_user_is_not_authenticated(self):
-        response = self.client.get(reverse('logout'))
+    def test_user_is_not_authenticated_after_logout(self):
+        self.client.get(reverse('logout'))
+        self.assertEqual(self.client.session.get('_auth_user_id'), None)
+
+    def test_not_authenticated_user_redirect(self):
+        self.client.get(reverse('logout'))
+        response = self.client.get(reverse('profile'))
         self.assertEqual(response.status_code, 302)
 
 
 class SignUpViewTestCase(TestCase):
-    def setUp(self):
-        self.user1 = User.objects.create_user(username='test1', password='top_secret1')
-        self.user2 = User.objects.create_user(username='test2', password='top_secret2')
-
     def test_users_created(self):
-        self.assertEqual(User.objects.count(), 2)
+        response = self.client.post(reverse('register'),
+                                    data={'username': 'alice',
+                                          'password1': 'alice@example.com',
+                                          'password2': 'alice@example.com'})
+        # Redirect to Profile Page
+        self.assertEqual(response.status_code, 302)
+
+        response = self.client.get(reverse('profile'))
+        self.assertEqual(response.status_code, 200)
+
+        # Get context data from Profile Page
+        profile = response.context['user']
+        self.assertEqual(profile.id, 1)
+        self.assertEqual(profile.username, 'alice')
 
 
 class ProfileModelTestCase(TestCase):

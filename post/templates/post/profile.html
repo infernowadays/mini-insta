@@ -18,7 +18,7 @@
         {% endif %}
 
         <p>{{ post.text }}</p>
-        <p><a href="{% url 'like' post_id=post.id %}"><img src="{% static "images/like.png" %}" width="25px" height="25px"></img>
+        <p><a href="{% url 'like' post_id=post.id %}"><img src="{% static "images/like.png" %}" width="25px" height="25px">
             {{ post.likes.count }}
         </a></p>
         <hr/>
